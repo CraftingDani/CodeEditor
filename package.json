@@ -1,0 +1,14 @@
+{
+  "name": "CodeEditor",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "CraftingDani",
+  "license": "ISC",
+  "dependencies": {
+    "electron": "^17.0.1"
+  }
+}
