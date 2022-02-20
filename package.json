@@ -9,6 +9,8 @@
   "author": "CraftingDani",
   "license": "ISC",
   "dependencies": {
-    "electron": "^17.0.1"
+    "codemirror": "^5.65.1",
+    "electron": "^17.0.1",
+    "electron-reload": "^2.0.0-alpha.1"
   }
 }
