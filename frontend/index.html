@@ -12,11 +12,30 @@
 </head>
 
 <body>
+    <header class="titlebar">
+        <img src="../assets/icon.png" alt="icon">
+        <h1>CodeEditor</h1>
+        <button class="minimizeWindow">
+            <img src="../assets/minimizeWindow.png" alt="minimize window">
+        </button>
+        <button class="toggleWindowSize">
+            <img src="../assets/toggleWindowSize.png" alt="toggle window size">
+        </button>
+        <button class="closeWindow">
+            <img src="../assets/closeWindow.png" alt="close window">
+        </button>
+    </header>
+    
     <main>
         <nav class="sidebar"></nav>
         
         <div class="editorContainer">
-            <nav class="openFiles"></nav>
+            <nav class="openFiles">
+                <a> <h2>index.html</h2> <button>&times;</button> </a>
+                <a class="selectedFile"> <h2>style.css</h2> <button>&times;</button> </a>
+                <a> <h2>script.js</h2> <button>&times;</button> </a>
+                <a> <h2>packagessssssssssssssssssss-lock.json</h2> <button>&times;</button> </a>
+            </nav>
 
             <textarea class="editor"></textarea>
         </div>

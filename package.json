@@ -1,5 +1,5 @@
 {
-  "name": "CodeEditor",
+  "name": "code-editor",
   "version": "1.0.0",
   "description": "",
   "main": "main.js",
@@ -9,8 +9,7 @@
   "author": "CraftingDani",
   "license": "ISC",
   "dependencies": {
-    "codemirror": "^5.65.1",
-    "electron": "^17.0.1",
-    "electron-reload": "^2.0.0-alpha.1"
+    "custom-electron-titlebar": "^4.1.0",
+    "electron": "^17.0.1"
   }
 }

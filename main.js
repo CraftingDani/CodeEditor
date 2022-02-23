@@ -1,7 +1,7 @@
 
 //-- variables --\\
 
-const { BrowserWindow, app, Menu, dialog, globalShortcut } = require("electron")
+const { BrowserWindow, app, Menu, dialog, ipcMain } = require("electron")
 let window
 let filePath = null //currently opened file
 let openFiles = []  //opened files
@@ -10,7 +10,7 @@ let openFiles = []  //opened files
 
 //-- startup --\\
 
-app.whenReady().then(async function()
+app.whenReady().then(function()
 {
     createWindow()
     createMenu()
@@ -26,7 +26,10 @@ function createWindow()
     ({
         width: 1000,
         height: 600,
+        frame: false,
         icon: "./assets/icon.png",
+        darkTheme: true,
+        autoHideMenuBar: true,
         webPreferences:
         {
             nodeIntegration: true,
@@ -36,7 +39,7 @@ function createWindow()
 
     //window.maximize()
     window.loadFile("./frontend/index.html")
-    //window.webContents.openDevTools();
+    window.webContents.openDevTools()
 }
 
 function createMenu()
@@ -56,42 +59,55 @@ function createMenu()
                     label: "Open",
                     click: openFile,
                     accelerator: "CmdOrCtrl+O"
+                },
+                {
+                    label: "New",
+                    click: newFile,
+                    accelerator: "CmdOrCtrl+N"
                 }
             ]
         }
     ]))
 }
 
-async function promptFilePath()
+async function promptFilePathOpen()
 {
     await dialog.showOpenDialog
-    ({ properties: ["openFile"], filters: [{ name: 'Text', extensions: ["txt", "html", "js", "css"] }] }).then(function(res)
+    ({ properties: ["openFile"] }).then(function(res)
     {
         if(res.canceled) return
         filePath = res.filePaths[0]
-        console.log(filePath)
+    })
+}
+
+async function promptFilePathSave()
+{
+    await dialog.showSaveDialog().then(function(res)
+    {
+        if(res.canceled) return
+        filePath = res.filePath
     })
 }
 
 async function openFile()
 {
-    await promptFilePath()
-    openFiles.push(filePath)
-    console.log(filePath)
+    await promptFilePathOpen()
+    //openFiles.push(filePath)
     window.webContents.send("crd-openFile", filePath)
 }
 
-function saveFile()
+async function saveFile()
 {
-    console.log("save")
-    if(filePath == null || undefined) return createFile()
+    if(filePath == null || undefined) await promptFilePathSave()
     window.webContents.send("crd-saveFile", filePath)
 }
 
-function createFile()
+async function newFile()
 {
-    //window.webContents.send("crd-createFile")
-    console.log("create")
+    filePath = null
+    await promptFilePathSave()
+    window.webContents.send("crd-resetEditor")
+    window.webContents.send("crd-saveFile", filePath)
 }
 
 
@@ -101,4 +117,20 @@ function createFile()
 app.on("window-all-closed", function()
 {
     if(process.platform != "darwin") app.quit()
+})
+
+ipcMain.on("crd-minimizeWindow", function()
+{
+    //coming soon
+})
+
+ipcMain.on("crd-toggleWindowSize", function()
+{
+    //coming soon
+})
+
+ipcMain.on("crd-closeWindow", function()
+{
+    console.log("quit")
+    window.close()
 })

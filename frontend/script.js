@@ -1,9 +1,33 @@
+
+//-- imports --\\
+
 const { ipcRenderer } = require("electron")
 const fs = require("fs")
 
 const editorElem = document.querySelector("textarea.editor")
 
 
+
+//-- functions --\\
+
+function minimizeWindow()
+{
+    ipcRenderer.send("crd-minimizeWindow")
+}
+
+function toggleWindowSize()
+{
+    ipcRenderer.send("crd-toggleWindowSize")
+}
+
+function closeWindow()
+{
+    ipcRenderer.send("crd-closeWindow")
+}
+
+
+
+//-- listeners --\\
 
 ipcRenderer.on("crd-openFile", function(e, path)
 {
@@ -16,4 +40,9 @@ ipcRenderer.on("crd-saveFile", function(e, path)
     {
         if(err) throw err
     })
+})
+
+ipcRenderer.on("crd-resetEditor", function()
+{
+    editorElem.value = ""
 })
