@@ -2,9 +2,10 @@
 //-- variables --\\
 
 const { BrowserWindow, app, Menu, dialog, ipcMain } = require("electron")
+const fs = require("fs")
+const path = require("path")
 let window
 let filePath = null //currently opened file
-let openFiles = []  //opened files
 
 
 
@@ -28,8 +29,6 @@ function createWindow()
         height: 600,
         frame: false,
         icon: "./assets/icon.png",
-        darkTheme: true,
-        autoHideMenuBar: true,
         webPreferences:
         {
             nodeIntegration: true,
@@ -37,10 +36,11 @@ function createWindow()
         }
     })
 
-    //window.maximize()
+    window.maximize()
     window.loadFile("./frontend/index.html")
     window.webContents.openDevTools()
 }
+
 
 function createMenu()
 {
@@ -70,6 +70,7 @@ function createMenu()
     ]))
 }
 
+
 async function promptFilePathOpen()
 {
     await dialog.showOpenDialog
@@ -80,6 +81,7 @@ async function promptFilePathOpen()
     })
 }
 
+
 async function promptFilePathSave()
 {
     await dialog.showSaveDialog().then(function(res)
@@ -89,18 +91,20 @@ async function promptFilePathSave()
     })
 }
 
+
 async function openFile()
 {
     await promptFilePathOpen()
-    //openFiles.push(filePath)
     window.webContents.send("crd-openFile", filePath)
 }
+
 
 async function saveFile()
 {
     if(filePath == null || undefined) await promptFilePathSave()
     window.webContents.send("crd-saveFile", filePath)
 }
+
 
 async function newFile()
 {
@@ -119,18 +123,43 @@ app.on("window-all-closed", function()
     if(process.platform != "darwin") app.quit()
 })
 
+
 ipcMain.on("crd-minimizeWindow", function()
 {
-    //coming soon
+    window.minimize()
 })
+
 
 ipcMain.on("crd-toggleWindowSize", function()
 {
-    //coming soon
+    window.isMaximized() ? window.unmaximize() : window.maximize()
 })
+
 
 ipcMain.on("crd-closeWindow", function()
 {
-    console.log("quit")
     window.close()
 })
+
+
+ipcMain.on("crd-fileChange", function(_, pathInput)
+{
+    filePath = pathInput
+})
+
+
+ipcMain.on("crd-saveFile", function()
+{
+    if(filePath != null) saveFile()
+})
+
+
+
+
+
+//-- TODOs --\\
+
+//Syntax highlighting
+//Bugs
+//  remove eventlisteners (.openFiles a)
+//  select remaining files when 1 was closed
